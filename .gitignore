@@ -1,0 +1,153 @@
+# =========================
+# .NET / C# typical .gitignore
+# =========================
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio / Rider / VS Code user-specific files
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+*.DotSettings.user
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains Rider
+*.sln.iml
+
+# MSBuild / project artifacts
+*.cache
+*.pdb
+*.mdb
+*.ilk
+*.obj
+*.tlog
+*.log
+*.tmp
+
+# NuGet
+*.nupkg
+*.snupkg
+# If you use packages.config and have a local packages folder, ignore it:
+packages/
+# But keep NuGet config/props/targets files tracked
+!NuGet.config
+!*.props
+!*.targets
+
+# dotnet tool restore / local tools (optional; keep if you want reproducible tooling)
+#.config/dotnet-tools.json
+
+# Test results
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# BenchmarkDotNet
+BenchmarkDotNet.Artifacts/
+
+# ASP.NET / IIS
+*.Publish.xml
+*.pubxml
+*.publishproj
+PublishProfiles/
+wwwroot/lib/
+
+# User secrets (dev only)
+secrets.json
+
+# EF / local DBs
+*.mdf
+*.ldf
+*.sqlite
+*.db
+*.db-shm
+*.db-wal
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Node (if present in the repo)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Containers / local overrides
+docker-compose.override.yml
+
+# ReSharper / analyzers
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings
+
+# Coverage output folders commonly used
+coverage/
+.coverage/
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212316.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212316.401.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212316-1.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212316-2.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212754.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212758.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212758-1.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212758-2.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212758-3.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212759.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212759-1.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212759-2.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212759-3.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212759-4.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212802.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212802-1.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212802-2.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212803.401.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212827.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212827-1.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212827-2.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212827-3.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212827-4.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212827-5.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212827-6.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212827-7.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212827-8.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212827-9.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212828.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212828.401.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T212828-1.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T221431.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T221432.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T221432-1.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T221432-2.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T221432-3.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T221432-4.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T221432-5.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T221432-6.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T221432-7.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T221433.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T221433.401.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T221433-1.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/2026-02-26T221433-2.200.json
+/.idea/.idea.Epic5/.idea/httpRequests/http-client.cookies
+/.idea/.idea.Epic5/.idea/httpRequests/http-requests-log.http
+/.idea/.idea.Epic5/.idea/encodings.xml
+/.idea/.idea.Epic5/.idea/indexLayout.xml
+/.idea/.idea.Epic5/.idea/projectSettingsUpdater.xml
+/.idea/.idea.Epic5/.idea/vcs.xml
+/.idea/.idea.Epic5/.idea/workspace.xml

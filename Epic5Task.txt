@@ -1,0 +1,4 @@
+Epic5Task.Domain         -> (нічого)
+Epic5Task.Application    -> Epic5Task.Domain
+Epic5Task.Infrastructure -> Epic5Task.Application
+Epic5Task.Api            -> Epic5Task.Application + Epic5Task.Infrastructure
