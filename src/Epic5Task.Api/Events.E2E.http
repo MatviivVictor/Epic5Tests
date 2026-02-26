@@ -1,0 +1,315 @@
+@baseUrl = https://localhost:7135
+@phone1 = +380501111111
+@phone2 = +380502222222
+@phone3 = +380503333333
+
+### 1) List events (sanity check)
+GET {{baseUrl}}/api/v1/events/list
+x-phone-number: {{phone1}}
+
+> {%
+    client.test("ListEvents should return 200", function () {
+        client.assert(response.status === 200, "Expected 200, got " + response.status);
+    });
+
+    client.test("ListEvents should return JSON array", function () {
+        const body = response.body;
+        client.assert(Array.isArray(body), "Expected array, got: " + (typeof body));
+    });
+%}
+
+###
+
+### 2) Create event (store eventId from response)
+POST {{baseUrl}}/api/v1/events
+Content-Type: application/json
+x-phone-number: {{phone1}}
+
+{
+  "eventTitle": "HTTP E2E Event",
+  "eventDate": "2026-03-15",
+  "eventTime": "19:30:00",
+  "eventType": "Concert",
+  "eventCapacities": [
+    { "ticketType": "Regular", "ticketPrice": 499.00, "ticketCapacityLimit": 10 },
+    { "ticketType": "VIP", "ticketPrice": 1499.00, "ticketCapacityLimit": 5 },
+    { "ticketType": "Student", "ticketPrice": 299.00, "ticketCapacityLimit": 7 }
+  ]
+}
+
+> {%
+    client.test("CreateEvent should return 200", function () {
+        client.assert(response.status === 200, "Expected 200, got " + response.status);
+    });
+
+    client.test("CreateEvent should return event object with id/eventId", function () {
+        const body = response.body || {};
+        const id = body.eventId ?? body.id;
+        client.assert(!!id, "Response does not contain eventId/id");
+        client.global.set("eventId", id);
+    });
+%}
+
+###
+
+### 3) Get event by id (using stored eventId)
+GET {{baseUrl}}/api/v1/events/{{eventId}}
+x-phone-number: {{phone1}}
+
+> {%
+    client.test("GetEventById should return 200", function () {
+        client.assert(response.status === 200, "Expected 200, got " + response.status);
+    });
+
+    client.test("GetEventById should return same id", function () {
+        const body = response.body || {};
+        const id = body.eventId ?? body.id;
+        client.assert(String(id) === String(client.global.get("eventId")), "Returned id does not match created id");
+    });
+%}
+
+###
+
+### 4) Update event
+PUT {{baseUrl}}/api/v1/events/{{eventId}}
+Content-Type: application/json
+x-phone-number: {{phone1}}
+
+{
+  "eventTitle": "HTTP E2E Event (Updated)",
+  "eventDate": "2026-03-16",
+  "eventTime": "20:00:00",
+  "eventType": "Conference",
+  "eventCapacities": [
+    { "ticketType": "Regular", "ticketPrice": 599.00, "ticketCapacityLimit": 12 },
+    { "ticketType": "VIP", "ticketPrice": 1699.00, "ticketCapacityLimit": 6 }
+  ]
+}
+
+> {%
+    client.test("UpdateEvent should return 200", function () {
+        client.assert(response.status === 200, "Expected 200, got " + response.status);
+    });
+
+    client.test("UpdateEvent should return updated title", function () {
+        const body = response.body || {};
+        client.assert(body.eventTitle === "HTTP E2E Event (Updated)", "Title was not updated");
+    });
+%}
+
+###
+
+### 5) Book tickets - customer 1 (phone1) + store one ticketId for lifecycle tests
+POST {{baseUrl}}/api/v1/events/{{eventId}}/tickets
+Content-Type: application/json
+x-phone-number: {{phone1}}
+
+{
+  "tickets": [
+    { "ticketType": "Regular", "quantity": 2 },
+    { "ticketType": "VIP", "quantity": 1 }
+  ]
+}
+
+> {%
+    client.test("CreateTickets (customer 1) should return 200", function () {
+        client.assert(response.status === 200, "Expected 200, got " + response.status);
+    });
+
+    client.test("CreateTickets (customer 1) should return array of ids (length 3)", function () {
+        const body = response.body;
+        client.assert(Array.isArray(body), "Expected array of ticket ids");
+        client.assert(body.length === 3, "Expected 3 ticket ids, got " + body.length);
+    });
+
+    client.test("Store a ticketId for confirm/cancel/history flow", function () {
+        const body = response.body || [];
+        const ticketId = body[0];
+        client.assert(!!ticketId, "No ticket id to store");
+        client.global.set("ticketId", ticketId);
+    });
+%}
+
+###
+
+### 6) Book tickets - customer 2 (phone2)
+POST {{baseUrl}}/api/v1/events/{{eventId}}/tickets
+Content-Type: application/json
+x-phone-number: {{phone2}}
+
+{
+  "tickets": [
+    { "ticketType": "VIP", "quantity": 3 }
+  ]
+}
+
+> {%
+    client.test("CreateTickets (customer 2) should return 200", function () {
+        client.assert(response.status === 200, "Expected 200, got " + response.status);
+    });
+
+    client.test("CreateTickets (customer 2) should return array of ids (length 3)", function () {
+        const body = response.body;
+        client.assert(Array.isArray(body), "Expected array of ticket ids");
+        client.assert(body.length === 3, "Expected 3 ticket ids, got " + body.length);
+    });
+%}
+
+###
+
+### 7) Book tickets - customer 3 (phone3)
+POST {{baseUrl}}/api/v1/events/{{eventId}}/tickets
+Content-Type: application/json
+x-phone-number: {{phone3}}
+
+{
+  "tickets": [
+    { "ticketType": "Regular", "quantity": 1 },
+    { "ticketType": "VIP", "quantity": 1 }
+  ]
+}
+
+> {%
+    client.test("CreateTickets (customer 3) should return 200", function () {
+        client.assert(response.status === 200, "Expected 200, got " + response.status);
+    });
+
+    client.test("CreateTickets (customer 3) should return array of ids (length 2)", function () {
+        const body = response.body;
+        client.assert(Array.isArray(body), "Expected array of ticket ids");
+        client.assert(body.length === 2, "Expected 2 ticket ids, got " + body.length);
+    });
+%}
+
+###
+
+### 7.1) Tickets list for customer 1 should include stored ticketId (and be Pending initially)
+GET {{baseUrl}}/api/v1/tickets/list
+x-phone-number: {{phone1}}
+
+> {%
+    client.test("GetTickets should return 200", function () {
+        client.assert(response.status === 200, "Expected 200, got " + response.status);
+    });
+
+    client.test("GetTickets should be array", function () {
+        client.assert(Array.isArray(response.body), "Expected array");
+    });
+
+    client.test("Stored ticketId should exist in list", function () {
+        const ticketId = client.global.get("ticketId");
+        const found = (response.body || []).find(t => String(t.ticketId) === String(ticketId));
+        client.assert(!!found, "TicketId " + ticketId + " not found in /tickets/list");
+        client.assert(found.ticketStatus === "Pending", "Expected Pending, got " + found.ticketStatus);
+    });
+%}
+
+###
+
+### 7.2) Confirm ticket (should return 204 No Content)
+PATCH {{baseUrl}}/api/v1/tickets/{{ticketId}}
+x-phone-number: {{phone1}}
+
+> {%
+    client.test("ConfirmTicket should return 204", function () {
+        client.assert(response.status === 204, "Expected 204, got " + response.status);
+    });
+%}
+
+###
+
+### 7.3) Ticket history after confirm should include Pending and Confirmed
+GET {{baseUrl}}/api/v1/tickets/{{ticketId}}/history
+x-phone-number: {{phone1}}
+
+> {%
+    client.test("GetTicketHistory (after confirm) should return 200", function () {
+        client.assert(response.status === 200, "Expected 200, got " + response.status);
+    });
+
+    client.test("History should be array and contain Confirmed", function () {
+        const history = response.body || [];
+        client.assert(Array.isArray(history), "Expected array");
+        const statuses = history.map(h => h.ticketStatus);
+        client.assert(statuses.includes("Pending"), "Expected history to include Pending. Got: " + JSON.stringify(statuses));
+        client.assert(statuses.includes("Confirmed"), "Expected history to include Confirmed. Got: " + JSON.stringify(statuses));
+    });
+%}
+
+###
+
+### 7.4) Cancel ticket (should return 204 No Content)
+DELETE {{baseUrl}}/api/v1/tickets/{{ticketId}}
+x-phone-number: {{phone1}}
+
+> {%
+    client.test("CancelTicket should return 204", function () {
+        client.assert(response.status === 204, "Expected 204, got " + response.status);
+    });
+%}
+
+###
+
+### 7.5) Ticket history after cancel should include Cancelled
+GET {{baseUrl}}/api/v1/tickets/{{ticketId}}/history
+x-phone-number: {{phone1}}
+
+> {%
+    client.test("GetTicketHistory (after cancel) should return 200", function () {
+        client.assert(response.status === 200, "Expected 200, got " + response.status);
+    });
+
+    client.test("History should contain Cancelled", function () {
+        const history = response.body || [];
+        client.assert(Array.isArray(history), "Expected array");
+        const statuses = history.map(h => h.ticketStatus);
+        client.assert(statuses.includes("Cancelled"), "Expected history to include Cancelled. Got: " + JSON.stringify(statuses));
+    });
+%}
+
+###
+
+### 8) Get event statistics
+GET {{baseUrl}}/api/v1/events/{{eventId}}/statistics
+x-phone-number: {{phone1}}
+
+> {%
+    client.test("GetEventStatistics should return 200", function () {
+        client.assert(response.status === 200, "Expected 200, got " + response.status);
+    });
+
+    client.test("GetEventStatistics should return JSON object", function () {
+        const body = response.body;
+        client.assert(body && typeof body === "object" && !Array.isArray(body), "Expected object");
+    });
+%}
+
+###
+
+### 9) List events (should still be OK after mutations)
+GET {{baseUrl}}/api/v1/events/list
+x-phone-number: {{phone1}}
+
+> {%
+    client.test("ListEvents (after) should return 200", function () {
+        client.assert(response.status === 200, "Expected 200, got " + response.status);
+    });
+
+    client.test("ListEvents (after) should return array", function () {
+        const body = response.body;
+        client.assert(Array.isArray(body), "Expected array");
+    });
+%}
+
+###
+
+### 10) Negative: request without x-phone-number should be rejected
+GET {{baseUrl}}/api/v1/events/list
+
+> {%
+    client.test("Missing x-phone-number should not be 2xx", function () {
+        client.assert(response.status < 200 || response.status >= 300, "Expected non-2xx, got " + response.status);
+    });
+%}
+
+###

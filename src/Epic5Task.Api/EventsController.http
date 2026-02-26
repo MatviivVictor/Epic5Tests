@@ -1,0 +1,76 @@
+@baseUrl = https://localhost:7135/
+@eventId = 1
+
+### Create a new event
+# NOTE: API requires phone number header on every request.
+# After running this request, copy returned event id and put it into eventId above
+POST {{baseUrl}}/api/v1/events
+Content-Type: application/json
+x-phone-number: +380501111111
+
+{
+  "eventTitle": "Rider Demo Event",
+  "eventDate": "2026-03-15",
+  "eventTime": "19:30:00",
+  "eventType": "Concert",
+  "eventCapacities": [
+    {
+      "ticketType": "Regular",
+      "ticketPrice": 499.00,
+      "ticketCapacityLimit": 100
+    },
+    {
+      "ticketType": "VIP",
+      "ticketPrice": 1499.00,
+      "ticketCapacityLimit": 20
+    },
+    {
+      "ticketType": "Student",
+      "ticketPrice": 299.00,
+      "ticketCapacityLimit": 50
+    }
+  ]
+}
+
+###
+
+### Book tickets (customer 1)
+POST {{baseUrl}}/api/v1/events/{{eventId}}/tickets
+Content-Type: application/json
+x-phone-number: +380501111111
+
+{
+  "tickets": [
+    { "ticketType": "Regular", "quantity": 2 },
+    { "ticketType": "VIP", "quantity": 1 }
+  ]
+}
+
+###
+
+### Book tickets (customer 2)
+POST {{baseUrl}}/api/v1/events/{{eventId}}/tickets
+Content-Type: application/json
+x-phone-number: +380502222222
+
+{
+  "tickets": [
+    { "ticketType": "Student", "quantity": 3 }
+  ]
+}
+
+###
+
+### Book tickets (customer 3)
+POST {{baseUrl}}/api/v1/events/{{eventId}}/tickets
+Content-Type: application/json
+x-phone-number: +380503333333
+
+{
+  "tickets": [
+    { "ticketType": "Regular", "quantity": 1 },
+    { "ticketType": "Student", "quantity": 1 }
+  ]
+}
+
+###
