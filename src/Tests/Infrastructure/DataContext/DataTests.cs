@@ -1,3 +1,4 @@
+using AwesomeAssertions;
 using Epic5Task.Application.Exceptions;
 using Epic5Task.Domain.Entities;
 using Epic5Task.Domain.Enums;
@@ -41,11 +42,12 @@ public class DataTests
             EventOwner = 1
         });
 
-        Assert.That(id1, Is.EqualTo(1));
-        Assert.That(id2, Is.EqualTo(2));
-        Assert.That(Data.Events, Has.Count.EqualTo(2));
-        Assert.That(Data.Events[0].EventId, Is.EqualTo(1));
-        Assert.That(Data.Events[1].EventId, Is.EqualTo(2));
+        id1.Should().Be(1);
+        id2.Should().Be(2);
+
+        Data.Events.Should().HaveCount(2);
+        Data.Events[0].EventId.Should().Be(1);
+        Data.Events[1].EventId.Should().Be(2);
     }
 
     [Test]
@@ -54,11 +56,12 @@ public class DataTests
         var id1 = Data.AddUser(new UserEntity { PhoneNumber = "+10000000001" });
         var id2 = Data.AddUser(new UserEntity { PhoneNumber = "+10000000002" });
 
-        Assert.That(id1, Is.EqualTo(1));
-        Assert.That(id2, Is.EqualTo(2));
-        Assert.That(Data.Users, Has.Count.EqualTo(2));
-        Assert.That(Data.Users[0].UserId, Is.EqualTo(1));
-        Assert.That(Data.Users[1].UserId, Is.EqualTo(2));
+        id1.Should().Be(1);
+        id2.Should().Be(2);
+
+        Data.Users.Should().HaveCount(2);
+        Data.Users[0].UserId.Should().Be(1);
+        Data.Users[1].UserId.Should().Be(2);
     }
 
     [Test]
@@ -73,8 +76,11 @@ public class DataTests
             TicketSold = 0
         };
 
-        Assert.That(() => Data.AddEventCapacity(capacity),
-            Throws.TypeOf<EntityNotFoundException>().With.Message.EqualTo("Event not found"));
+        var act = () => Data.AddEventCapacity(capacity);
+
+        act.Should()
+            .Throw<EntityNotFoundException>()
+            .WithMessage("Event not found");
     }
 
     [Test]
@@ -108,9 +114,9 @@ public class DataTests
         Data.AddEventCapacity(c1);
         Data.AddEventCapacity(c2);
 
-        Assert.That(Data.EventCapacities, Has.Count.EqualTo(2));
-        Assert.That(c1.EventCapacityId, Is.EqualTo(1));
-        Assert.That(c2.EventCapacityId, Is.EqualTo(2));
+        Data.EventCapacities.Should().HaveCount(2);
+        c1.EventCapacityId.Should().Be(1);
+        c2.EventCapacityId.Should().Be(2);
     }
 
     [Test]
@@ -153,8 +159,8 @@ public class DataTests
         Data.AddEventCapacity(c11);
         Data.AddEventCapacity(c21);
 
-        Assert.That(c11.EventCapacityId, Is.EqualTo(1));
-        Assert.That(c21.EventCapacityId, Is.EqualTo(1));
+        c11.EventCapacityId.Should().Be(1);
+        c21.EventCapacityId.Should().Be(1);
     }
 
     [Test]
@@ -189,8 +195,8 @@ public class DataTests
 
         Data.RemoveEventCapacity(c1);
 
-        Assert.That(Data.EventCapacities, Has.Count.EqualTo(1));
-        Assert.That(Data.EventCapacities.Single(), Is.SameAs(c2));
+        Data.EventCapacities.Should().HaveCount(1);
+        Data.EventCapacities.Single().Should().BeSameAs(c2);
     }
 
     [Test]
@@ -217,11 +223,13 @@ public class DataTests
         var id1 = Data.AddTicket(ticket1);
         var id2 = Data.AddTicket(ticket2);
 
-        Assert.That(id1, Is.EqualTo(1));
-        Assert.That(id2, Is.EqualTo(2));
-        Assert.That(ticket1.TicketId, Is.EqualTo(1));
-        Assert.That(ticket2.TicketId, Is.EqualTo(2));
-        Assert.That(Data.Tickets, Has.Count.EqualTo(2));
+        id1.Should().Be(1);
+        id2.Should().Be(2);
+
+        ticket1.TicketId.Should().Be(1);
+        ticket2.TicketId.Should().Be(2);
+
+        Data.Tickets.Should().HaveCount(2);
     }
 
     [Test]
@@ -246,8 +254,9 @@ public class DataTests
         Data.AddTicketStatusHistory(h1);
         Data.AddTicketStatusHistory(h2);
 
-        Assert.That(h1.TicketStatusHistoryId, Is.EqualTo(1));
-        Assert.That(h2.TicketStatusHistoryId, Is.EqualTo(2));
-        Assert.That(Data.TicketStatusHistory, Has.Count.EqualTo(2));
+        h1.TicketStatusHistoryId.Should().Be(1);
+        h2.TicketStatusHistoryId.Should().Be(2);
+
+        Data.TicketStatusHistory.Should().HaveCount(2);
     }
 }

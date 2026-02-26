@@ -11,4 +11,5 @@ public class TicketEntity
     public TicketStatusesEnum TicketStatus { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? ConfirmedAt { get; set; }
+    public bool? NoRefund { get; set; }
 }

@@ -3,6 +3,7 @@ using Epic5Task.Application.Exceptions;
 using Epic5Task.Application.Interfaces;
 using Epic5Task.Domain.AggregateRoot;
 using Epic5Task.Domain.Entities;
+using Epic5Task.Domain.Enums;
 
 namespace Epic5Task.Infrastructure.DataProviders;
 
@@ -54,7 +55,7 @@ public class EventProvider : IEventProvider
         return events;
     }
 
-    private static IEnumerable<@Event> GetRawEvents()
+    private static IEnumerable<Event> GetRawEvents()
     {
         return DataContext.Data.Events.Where(x => x.EventDate.ToDateTime(x.EventTime) >= DateTime.UtcNow)
             .GroupJoin(DataContext.Data.EventCapacities,
@@ -64,7 +65,7 @@ public class EventProvider : IEventProvider
                     Event = x,
                     Capacities = y.ToList()
                 })
-            .Select(x => new Event(x.Event, x.Capacities));
+            .Select(x => new Event(x.Event, x.Capacities)).AsEnumerable();
     }
 
     public void UpdateEvent(int requestEventId, EventRequestModel requestModel, int userId)
@@ -126,5 +127,32 @@ public class EventProvider : IEventProvider
     {
         var @event = GetRawEvents().FirstOrDefault(x => x.EventId  == eventId);
         return @event ?? throw new EntityNotFoundException("Event not found");  
+    }
+
+    public void UpdateEventCapacity(int eventId, TicketTypesEnum ticketType, TicketStatusesEnum ticketStatus)
+    {
+        var eventCapacity = DataContext.Data.EventCapacities
+            .FirstOrDefault(x => x.EventId == eventId && x.TicketType == ticketType);
+        
+        if (eventCapacity == null)
+        {
+            throw new EntityNotFoundException("Event or Event's capacity not found");
+        }
+
+        switch (ticketStatus)
+        {
+            case TicketStatusesEnum.Pending:
+                break;
+            case TicketStatusesEnum.Confirmed:
+                eventCapacity.TicketSold++;
+                break;
+            case TicketStatusesEnum.Cancelled:
+                eventCapacity.TicketSold--;
+                break;
+            case TicketStatusesEnum.Expired:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(ticketStatus), ticketStatus, null);
+        }
     }
 }
