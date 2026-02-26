@@ -10,4 +10,5 @@ public interface ITicketProvider
     void UpdateTicketStatus(Ticket ticket, TicketStatusesEnum expired, int userId);
     Ticket GetTicket(int ticketId);
     TicketWithHistory GetTicketHistory(int requestTicketId);
+    void SetNoRefund(Ticket ticket, bool b);
 }

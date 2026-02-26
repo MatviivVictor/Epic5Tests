@@ -55,14 +55,14 @@ public class CancelTicketCommandHandler : IRequestHandler<CancelTicketCommand, U
         var eventDate = ticket.Event.EventDate.ToDateTime(ticket.Event.EventTime);
         var now = DateTime.UtcNow;
 
-        if (eventDate > now)
+        if (eventDate < now)
         {
             throw new EntityConflictException("Ticket is not yet available for cancellation"); 
         }
 
         if (ticket.TicketStatus == TicketStatusesEnum.Confirmed)
         {
-            ticket.NoRefund = now - eventDate > TimeSpan.FromDays(1);
+            _ticketProvider.SetNoRefund(ticket, now - eventDate > TimeSpan.FromDays(1));
         }
 
         _ticketProvider.UpdateTicketStatus(ticket, TicketStatusesEnum.Cancelled, userId);

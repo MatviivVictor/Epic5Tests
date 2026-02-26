@@ -72,14 +72,17 @@ public class TicketProvider : ITicketProvider
             (TicketStatusesEnum.Confirmed, TicketStatusesEnum.Cancelled) => true,
             _ => false
         };
-
+        
         ticket.TicketStatus = status;
         if (shouldUpdateCapacity)
         {
             _eventProvider.UpdateEventCapacity(ticket.EventId, ticket.TicketType, status);
         }
-
-        Data.TicketStatusHistory.Add(new TicketStatusHistoryEntity
+        
+        var entity = Data.Tickets.Single(x => x.TicketId == ticket.TicketId);
+        entity.TicketStatus = status;
+        
+        Data.AddTicketStatusHistory(new TicketStatusHistoryEntity
         {
             TicketId = ticket.TicketId,
             TicketStatus = status,
@@ -106,5 +109,13 @@ public class TicketProvider : ITicketProvider
                        })
                    .Select(x => new TicketWithHistory(x.Ticket, x.StatusHistory)).SingleOrDefault() ??
                throw new Exception("Ticket not found");
+    }
+
+    public void SetNoRefund(Ticket ticket, bool value)
+    {
+        ticket.NoRefund = value;
+        
+        var entity = Data.Tickets.Single(x => x.TicketId == ticket.TicketId);
+        entity.NoRefund = value;
     }
 }
