@@ -23,12 +23,15 @@ public class CreateTicketsCommandValidator : AbstractValidator<CreateTicketsComm
     {
         RuleFor(x => x.EventId).GreaterThan(0);
         RuleFor(x => x.Model).NotNull();
-        RuleForEach(x => x.Model.Tickets)
-            .ChildRules(c =>
-            {
-                c.RuleFor(x => x.TicketType).IsInEnum();
-                c.RuleFor(x => x.Quantity).GreaterThan(0);
-            });
+        When(x => x.Model != null, () =>
+        {
+            RuleForEach(x => x.Model.Tickets)
+                .ChildRules(c =>
+                {
+                    c.RuleFor(x => x.TicketType).IsInEnum();
+                    c.RuleFor(x => x.Quantity).GreaterThan(0);
+                });
+        });
     }
 }
 

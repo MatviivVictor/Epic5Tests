@@ -71,7 +71,7 @@ public class ConfirmTicketCommandHandler : IRequestHandler<ConfirmTicketCommand,
 
         if (ticket.CreatedAt.AddMinutes(15) < DateTime.UtcNow)
         {
-            ticket.TicketStatus = TicketStatusesEnum.Expired;
+            _ticketProvider.UpdateTicketStatus(ticket, TicketStatusesEnum.Expired, userId);
             throw new EntityConflictException("Ticket is expired");
         }
 
